@@ -1,12 +1,22 @@
 import os
 import json
 from typing import Dict, Any
+from datetime import datetime, date
 from google.cloud import pubsub_v1
 from google.auth import default
 from google.oauth2.service_account import Credentials
 from dotenv import load_dotenv
 
 load_dotenv()
+
+
+class DateTimeEncoder(json.JSONEncoder):
+    """Custom JSON encoder that handles datetime objects."""
+    
+    def default(self, obj):
+        if isinstance(obj, (datetime, date)):
+            return obj.isoformat()
+        return super().default(obj)
 
 
 class PubSubService:
@@ -60,8 +70,8 @@ class PubSubService:
                 print("PubSub client not properly initialized")
                 return False
 
-            # Convert to JSON and encode as bytes
-            message_json = json.dumps(order_data)
+            # Convert to JSON using custom encoder that handles datetime objects
+            message_json = json.dumps(order_data, cls=DateTimeEncoder)
             message_bytes = message_json.encode("utf-8")
 
             topic_path = self._publisher.topic_path(self.project_id, self.topic_name)

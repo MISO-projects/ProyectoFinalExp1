@@ -29,6 +29,8 @@ services:
       - PUBSUB_TOPIC_NAME=create-order-command
     depends_on:
       - pg_db
+    volumes:
+      - ./src/commands/api:/app
     networks:
       - orders-network
 
