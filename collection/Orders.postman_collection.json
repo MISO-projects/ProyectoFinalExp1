@@ -1,0 +1,161 @@
+{
+	"info": {
+		"_postman_id": "00e342b6-aeab-41b7-9f01-cafc9a8b3118",
+		"name": "Orders",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "43573848",
+		"_collection_link": "https://www.postman.com/gold-trinity-690884/workspace/messaging-azar/collection/43573848-00e342b6-aeab-41b7-9f01-cafc9a8b3118?action=share&source=collection_link&creator=43573848"
+	},
+	"item": [
+		{
+			"name": "command",
+			"item": [
+				{
+					"name": "crear orden",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "User-Agent",
+								"value": "insomnia/10.1.1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id_cliente\": \"f0d68d8a-8234-48c0-b42a-85373a92431a\",\n\t\"id_vendedor\": \"04f15b11-f4fe-472d-946b-ef1f10496279\",\n\t\"id_bodega_origen\": \"383c5ee8-ab0d-4148-a8a8-abfd7e9321e1\",\n\t\"fecha_entrega_estimada\": \"2024-12-31T10:00:00\",\n\t\"observaciones\": \"Entrega urgente - cliente VIP\",\n\t\"creado_por\": \"e4dfa280-56d9-458b-bafe-8d52cf3fd5c3\",\n\t\"detalles\": [\n\t\t{\n\t\t\t\"id_producto\": \"a09ac88f-058a-4f08-896f-d3ca700b3d64\",\n\t\t\t\"cantidad\": 2,\n\t\t\t\"precio_unitario\": 150.50,\n\t\t\t\"observaciones\": \"Producto frágil - manejar con cuidado\"\n\t\t},\n\t\t{\n\t\t\t\"id_producto\": \"9dcb7389-0512-4ab4-82b0-a9a95481ad20\",\n\t\t\t\"cantidad\": 1,\n\t\t\t\"precio_unitario\": 75.25\n\t\t}\n\t]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/orders",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"orders"
+							]
+						},
+						"description": "Generated from cURL: curl --request POST \\\n  --url http://localhost:3000/orders \\\n  --header 'Content-Type: application/json' \\\n  --header 'User-Agent: insomnia/10.1.1' \\\n  --data '{\n\t\"id_cliente\": \"f0d68d8a-8234-48c0-b42a-85373a92431a\",\n\t\"id_vendedor\": \"04f15b11-f4fe-472d-946b-ef1f10496279\",\n\t\"id_bodega_origen\": \"383c5ee8-ab0d-4148-a8a8-abfd7e9321e1\",\n\t\"fecha_entrega_estimada\": \"2024-12-31T10:00:00\",\n\t\"observaciones\": \"Entrega urgente - cliente VIP\",\n\t\"creado_por\": \"e4dfa280-56d9-458b-bafe-8d52cf3fd5c3\",\n\t\"detalles\": [\n\t\t{\n\t\t\t\"id_producto\": \"a09ac88f-058a-4f08-896f-d3ca700b3d64\",\n\t\t\t\"cantidad\": 2,\n\t\t\t\"precio_unitario\": 150.50,\n\t\t\t\"observaciones\": \"Producto frágil - manejar con cuidado\"\n\t\t},\n\t\t{\n\t\t\t\"id_producto\": \"9dcb7389-0512-4ab4-82b0-a9a95481ad20\",\n\t\t\t\"cantidad\": 1,\n\t\t\t\"precio_unitario\": 75.25\n\t\t}\n\t]\n}'"
+					},
+					"response": []
+				},
+				{
+					"name": "order command handler",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "User-Agent",
+								"value": "insomnia/10.1.1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"message\": {\n\t\t\"data\": \"eyJmZWNoYV9lbnRyZWdhX2VzdGltYWRhIjogIjIwMjQtMTItMzFUMTA6MDA6MDAiLCAib2JzZXJ2YWNpb25lcyI6ICJFbnRyZWdhIHVyZ2VudGUgLSBjbGllbnRlIFZJUCIsICJpZF9jbGllbnRlIjogIjBjM2E2ZGZmLTMxOWUtNDY0ZC1iN2M1LWEwZGMwNDBmNjQ2MSIsICJpZF92ZW5kZWRvciI6ICI3YWNhMmNmZS1kNWYyLTRhYWItOGQxMS01YTUxOTMxYTIzMzUiLCAiaWRfYm9kZWdhX29yaWdlbiI6ICJhMzJkOTcwOS04NWUxLTQ3N2QtYTY4Ni1iYmU2YWY5ZmI1YzEiLCAiY3JlYWRvX3BvciI6ICI0ZmJhZjQ2NS1lMTZkLTQ3MTktYTM1MS1kNTFjOWIzZGQzMGUiLCAiZGV0YWxsZXMiOiBbeyJpZF9wcm9kdWN0byI6ICJjZjA3NzJkYS04YzA3LTRkYmYtOTMxZi00ZWZkZDVkNTMyNjkiLCAiY2FudGlkYWQiOiAyLCAicHJlY2lvX3VuaXRhcmlvIjogMTUwLjUsICJvYnNlcnZhY2lvbmVzIjogIlByb2R1Y3RvIGZyXHUwMGUxZ2lsIC0gbWFuZWphciBjb24gY3VpZGFkbyJ9LCB7ImlkX3Byb2R1Y3RvIjogImNjYjg4ZGYzLWJmMjMtNDZiOC04MDdkLTVhNTFiZTE5MWYwNyIsICJjYW50aWRhZCI6IDEsICJwcmVjaW9fdW5pdGFyaW8iOiA3NS4yNSwgIm9ic2VydmFjaW9uZXMiOiBudWxsfV19\"\n\t}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3001/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								""
+							]
+						},
+						"description": "Generated from cURL: curl --request POST \\\n  --url http://localhost:3001/ \\\n  --header 'Content-Type: application/json' \\\n  --header 'User-Agent: insomnia/10.1.1' \\\n  --data '{\n\t\"message\": {\n\t\t\"data\": \"eyJmZWNoYV9lbnRyZWdhX2VzdGltYWRhIjogIjIwMjQtMTItMzFUMTA6MDA6MDAiLCAib2JzZXJ2YWNpb25lcyI6ICJFbnRyZWdhIHVyZ2VudGUgLSBjbGllbnRlIFZJUCIsICJpZF9jbGllbnRlIjogIjBjM2E2ZGZmLTMxOWUtNDY0ZC1iN2M1LWEwZGMwNDBmNjQ2MSIsICJpZF92ZW5kZWRvciI6ICI3YWNhMmNmZS1kNWYyLTRhYWItOGQxMS01YTUxOTMxYTIzMzUiLCAiaWRfYm9kZWdhX29yaWdlbiI6ICJhMzJkOTcwOS04NWUxLTQ3N2QtYTY4Ni1iYmU2YWY5ZmI1YzEiLCAiY3JlYWRvX3BvciI6ICI0ZmJhZjQ2NS1lMTZkLTQ3MTktYTM1MS1kNTFjOWIzZGQzMGUiLCAiZGV0YWxsZXMiOiBbeyJpZF9wcm9kdWN0byI6ICJjZjA3NzJkYS04YzA3LTRkYmYtOTMxZi00ZWZkZDVkNTMyNjkiLCAiY2FudGlkYWQiOiAyLCAicHJlY2lvX3VuaXRhcmlvIjogMTUwLjUsICJvYnNlcnZhY2lvbmVzIjogIlByb2R1Y3RvIGZyXHUwMGUxZ2lsIC0gbWFuZWphciBjb24gY3VpZGFkbyJ9LCB7ImlkX3Byb2R1Y3RvIjogImNjYjg4ZGYzLWJmMjMtNDZiOC04MDdkLTVhNTFiZTE5MWYwNyIsICJjYW50aWRhZCI6IDEsICJwcmVjaW9fdW5pdGFyaW8iOiA3NS4yNSwgIm9ic2VydmFjaW9uZXMiOiBudWxsfV19\"\n\t}\n}'"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "query",
+			"item": [
+				{
+					"name": "consultar orden",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "User-Agent",
+								"value": "insomnia/10.1.1"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3002/orders/b01e5e41-f524-45b1-9336-14b224775fef",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3002",
+							"path": [
+								"orders",
+								"b01e5e41-f524-45b1-9336-14b224775fef"
+							]
+						},
+						"description": "Generated from cURL: curl --request GET \\\n  --url http://localhost:3002/orders/b01e5e41-f524-45b1-9336-14b224775fef \\\n  --header 'User-Agent: insomnia/10.1.1'"
+					},
+					"response": []
+				},
+				{
+					"name": "order proyección handler",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "User-Agent",
+								"value": "insomnia/10.1.1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"message\": {\n\t\t\"data\": \"eyJpZCI6ICJiMDFlNWU0MS1mNTI0LTQ1YjEtOTMzNi0xNGIyMjQ3NzVmZWYiLCAiZmVjaGFfY3JlYWNpb24iOiAiMjAyNS0wOS0xNFQxNjo0NDoxNi4xMDQ0NDYiLCAiZmVjaGFfYWN0dWFsaXphY2lvbiI6ICIyMDI1LTA5LTE0VDE2OjQ0OjE2LjEwNDQ0NiIsICJudW1lcm9fb3JkZW4iOiAiT1JELTI1MDkxNC1DMURDNEM5QSIsICJlc3RhZG8iOiAiUEVORElFTlRFIiwgInZhbG9yX3RvdGFsIjogMzc2LjI1LCAiaWRfY2xpZW50ZSI6ICIwYzNhNmRmZi0zMTllLTQ2NGQtYjdjNS1hMGRjMDQwZjY0NjEiLCAiaWRfdmVuZGVkb3IiOiAiN2FjYTJjZmUtZDVmMi00YWFiLThkMTEtNWE1MTkzMWEyMzM1IiwgImlkX2JvZGVnYV9vcmlnZW4iOiAiYTMyZDk3MDktODVlMS00NzdkLWE2ODYtYmJlNmFmOWZiNWMxIiwgImNyZWFkb19wb3IiOiAiNGZiYWY0NjUtZTE2ZC00NzE5LWEzNTEtZDUxYzliM2RkMzBlIiwgImZlY2hhX2VudHJlZ2FfZXN0aW1hZGEiOiAiMjAyNC0xMi0zMVQxMDowMDowMCIsICJvYnNlcnZhY2lvbmVzIjogIkVudHJlZ2EgdXJnZW50ZSAtIGNsaWVudGUgVklQIiwgImRldGFsbGVzIjogW3siaWQiOiAiOTE4ZGRmMzUtZTYwYS00MDJiLTgyYTctZDZkYzVmMGE2MWM3IiwgImZlY2hhX2NyZWFjaW9uIjogIjIwMjUtMDktMTRUMTY6NDQ6MTYuMTA1MDgwIiwgImZlY2hhX2FjdHVhbGl6YWNpb24iOiAiMjAyNS0wOS0xNFQxNjo0NDoxNi4xMDUwODAiLCAiaWRfb3JkZW4iOiAiYjAxZTVlNDEtZjUyNC00NWIxLTkzMzYtMTRiMjI0Nzc1ZmVmIiwgImlkX3Byb2R1Y3RvIjogImNmMDc3MmRhLThjMDctNGRiZi05MzFmLTRlZmRkNWQ1MzI2OSIsICJjYW50aWRhZCI6IDIsICJwcmVjaW9fdW5pdGFyaW8iOiAxNTAuNSwgInN1YnRvdGFsIjogMzAxLjAsICJvYnNlcnZhY2lvbmVzIjogIlByb2R1Y3RvIGZyXHUwMGUxZ2lsIC0gbWFuZWphciBjb24gY3VpZGFkbyJ9LCB7ImlkIjogIjgyY2UzYTc0LTM1NTktNDlkMS1iMDAwLTU2OTI3YmU2YzY4MSIsICJmZWNoYV9jcmVhY2lvbiI6ICIyMDI1LTA5LTE0VDE2OjQ0OjE2LjEwNTEwMiIsICJmZWNoYV9hY3R1YWxpemFjaW9uIjogIjIwMjUtMDktMTRUMTY6NDQ6MTYuMTA1MTAyIiwgImlkX29yZGVuIjogImIwMWU1ZTQxLWY1MjQtNDViMS05MzM2LTE0YjIyNDc3NWZlZiIsICJpZF9wcm9kdWN0byI6ICJjY2I4OGRmMy1iZjIzLTQ2YjgtODA3ZC01YTUxYmUxOTFmMDciLCAiY2FudGlkYWQiOiAxLCAicHJlY2lvX3VuaXRhcmlvIjogNzUuMjUsICJzdWJ0b3RhbCI6IDc1LjI1LCAib2JzZXJ2YWNpb25lcyI6IG51bGx9XX0=\"\n\t}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3003/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3003",
+							"path": [
+								""
+							]
+						},
+						"description": "Generated from cURL: curl --request POST \\\n  --url http://localhost:3003/ \\\n  --header 'Content-Type: application/json' \\\n  --header 'User-Agent: insomnia/10.1.1' \\\n  --data '{\n\t\"message\": {\n\t\t\"data\": \"eyJpZCI6ICJiMDFlNWU0MS1mNTI0LTQ1YjEtOTMzNi0xNGIyMjQ3NzVmZWYiLCAiZmVjaGFfY3JlYWNpb24iOiAiMjAyNS0wOS0xNFQxNjo0NDoxNi4xMDQ0NDYiLCAiZmVjaGFfYWN0dWFsaXphY2lvbiI6ICIyMDI1LTA5LTE0VDE2OjQ0OjE2LjEwNDQ0NiIsICJudW1lcm9fb3JkZW4iOiAiT1JELTI1MDkxNC1DMURDNEM5QSIsICJlc3RhZG8iOiAiUEVORElFTlRFIiwgInZhbG9yX3RvdGFsIjogMzc2LjI1LCAiaWRfY2xpZW50ZSI6ICIwYzNhNmRmZi0zMTllLTQ2NGQtYjdjNS1hMGRjMDQwZjY0NjEiLCAiaWRfdmVuZGVkb3IiOiAiN2FjYTJjZmUtZDVmMi00YWFiLThkMTEtNWE1MTkzMWEyMzM1IiwgImlkX2JvZGVnYV9vcmlnZW4iOiAiYTMyZDk3MDktODVlMS00NzdkLWE2ODYtYmJlNmFmOWZiNWMxIiwgImNyZWFkb19wb3IiOiAiNGZiYWY0NjUtZTE2ZC00NzE5LWEzNTEtZDUxYzliM2RkMzBlIiwgImZlY2hhX2VudHJlZ2FfZXN0aW1hZGEiOiAiMjAyNC0xMi0zMVQxMDowMDowMCIsICJvYnNlcnZhY2lvbmVzIjogIkVudHJlZ2EgdXJnZW50ZSAtIGNsaWVudGUgVklQIiwgImRldGFsbGVzIjogW3siaWQiOiAiOTE4ZGRmMzUtZTYwYS00MDJiLTgyYTctZDZkYzVmMGE2MWM3IiwgImZlY2hhX2NyZWFjaW9uIjogIjIwMjUtMDktMTRUMTY6NDQ6MTYuMTA1MDgwIiwgImZlY2hhX2FjdHVhbGl6YWNpb24iOiAiMjAyNS0wOS0xNFQxNjo0NDoxNi4xMDUwODAiLCAiaWRfb3JkZW4iOiAiYjAxZTVlNDEtZjUyNC00NWIxLTkzMzYtMTRiMjI0Nzc1ZmVmIiwgImlkX3Byb2R1Y3RvIjogImNmMDc3MmRhLThjMDctNGRiZi05MzFmLTRlZmRkNWQ1MzI2OSIsICJjYW50aWRhZCI6IDIsICJwcmVjaW9fdW5pdGFyaW8iOiAxNTAuNSwgInN1YnRvdGFsIjogMzAxLjAsICJvYnNlcnZhY2lvbmVzIjogIlByb2R1Y3RvIGZyXHUwMGUxZ2lsIC0gbWFuZWphciBjb24gY3VpZGFkbyJ9LCB7ImlkIjogIjgyY2UzYTc0LTM1NTktNDlkMS1iMDAwLTU2OTI3YmU2YzY4MSIsICJmZWNoYV9jcmVhY2lvbiI6ICIyMDI1LTA5LTE0VDE2OjQ0OjE2LjEwNTEwMiIsICJmZWNoYV9hY3R1YWxpemFjaW9uIjogIjIwMjUtMDktMTRUMTY6NDQ6MTYuMTA1MTAyIiwgImlkX29yZGVuIjogImIwMWU1ZTQxLWY1MjQtNDViMS05MzM2LTE0YjIyNDc3NWZlZiIsICJpZF9wcm9kdWN0byI6ICJjY2I4OGRmMy1iZjIzLTQ2YjgtODA3ZC01YTUxYmUxOTFmMDciLCAiY2FudGlkYWQiOiAxLCAicHJlY2lvX3VuaXRhcmlvIjogNzUuMjUsICJzdWJ0b3RhbCI6IDc1LjI1LCAib2JzZXJ2YWNpb25lcyI6IG51bGx9XX0=\"\n\t}\n}'"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
