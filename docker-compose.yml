@@ -53,6 +53,26 @@ services:
       - orders-network
     depends_on:
       - pg_db
+  order-query-projection:
+    build:
+      context: ./src/queries/projection
+      dockerfile: Dockerfile
+    ports:
+      - "3003:3003"
+      - "5681:5681"
+    command:
+      - sh
+      - -c
+      - |
+        python -m debugpy --listen 0.0.0.0:5681 -m fastapi run main.py --port 3003 --reload
+    environment:
+      - GOOGLE_CLOUD_PROJECT_ID=tutoriales-miso
+    volumes:
+      - ./src/queries/projection:/app
+    networks:
+      - orders-network
+    depends_on:
+      - pg_db
 
 
 networks:
