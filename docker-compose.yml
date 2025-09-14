@@ -1,0 +1,60 @@
+services:
+  pg_db:
+    container_name: pg_db
+    image: postgres:14.18
+    environment:
+      POSTGRES_DB: "orders-db"
+      POSTGRES_USER: "root"
+      POSTGRES_PASSWORD: "orders-pass"
+      POSTGRES_ROOT_PASSWORD: "orders-pass"
+    networks:
+      - orders-network
+    volumes:
+      - ./data/postgresql/:/var/lib/postgresql/data
+    ports:
+      - "5480:5432"
+  order-command-api:
+    build:
+      context: ./src/commands/api
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+      - "5678:5678"
+    command:
+      - sh
+      - -c
+      - |
+        python -m debugpy --listen 0.0.0.0:5678 -m fastapi run main.py --port 3000 --reload
+    environment:
+      - GOOGLE_CLOUD_PROJECT_ID=tutoriales-miso
+      - PUBSUB_TOPIC_NAME=create-order-command
+    volumes:
+      - ./src/commands/api:/app
+    networks:
+      - orders-network
+  order-command-handler:
+    build:
+      context: ./src/commands/handlers
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+      - "5679:5678"
+    command:
+      - sh
+      - -c
+      - |
+        python -m debugpy --listen 0.0.0.0:5678 -m fastapi run main.py --port 3001 --reload
+    environment:
+      - GOOGLE_CLOUD_PROJECT_ID=tutoriales-miso
+      - PUBSUB_TOPIC_NAME=order-created
+    volumes:
+      - ./src/commands/handlers:/app
+    networks:
+      - orders-network
+    depends_on:
+      - pg_db
+
+
+networks:
+  orders-network:
+    driver: bridge
