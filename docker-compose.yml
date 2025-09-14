@@ -1,7 +1,7 @@
 services:
   pg_db:
     container_name: pg_db
-    image: postgres:14.18
+    image: postgres:17.6
     environment:
       POSTGRES_DB: "orders-db"
       POSTGRES_USER: "root"
@@ -32,6 +32,8 @@ services:
       - ./src/commands/api:/app
     networks:
       - orders-network
+    depends_on:
+      - pg_db
   order-command-handler:
     build:
       context: ./src/commands/handlers
