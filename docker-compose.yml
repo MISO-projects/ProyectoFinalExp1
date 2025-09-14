@@ -13,12 +13,13 @@ services:
       - ./data/postgresql/:/var/lib/postgresql/data
     ports:
       - "5480:5432"
-  order-service:
+  order-command-api:
     build:
       context: ./src/commands/api
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
+      - "5678:5678"
     command:
       - sh
       - -c
@@ -27,12 +28,32 @@ services:
     environment:
       - GOOGLE_CLOUD_PROJECT_ID=tutoriales-miso
       - PUBSUB_TOPIC_NAME=create-order-command
-    depends_on:
-      - pg_db
     volumes:
       - ./src/commands/api:/app
     networks:
       - orders-network
+  order-command-handler:
+    build:
+      context: ./src/commands/handlers
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+      - "5679:5678"
+    command:
+      - sh
+      - -c
+      - |
+        python -m debugpy --listen 0.0.0.0:5678 -m fastapi run main.py --port 3001 --reload
+    environment:
+      - GOOGLE_CLOUD_PROJECT_ID=tutoriales-miso
+      - PUBSUB_TOPIC_NAME=order-created
+    volumes:
+      - ./src/commands/handlers:/app
+    networks:
+      - orders-network
+    depends_on:
+      - pg_db
+
 
 networks:
   orders-network:
