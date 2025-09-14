@@ -1,7 +1,7 @@
 services:
   pg_db:
     container_name: pg_db
-    image: postgres:14.18
+    image: postgres:17.6
     environment:
       POSTGRES_DB: "orders-db"
       POSTGRES_USER: "root"
@@ -32,6 +32,8 @@ services:
       - ./src/commands/api:/app
     networks:
       - orders-network
+    depends_on:
+      - pg_db
   order-command-handler:
     build:
       context: ./src/commands/handlers
@@ -49,6 +51,46 @@ services:
       - PUBSUB_TOPIC_NAME=order-created
     volumes:
       - ./src/commands/handlers:/app
+    networks:
+      - orders-network
+    depends_on:
+      - pg_db
+  order-query-api:
+    build:
+      context: ./src/queries/api
+      dockerfile: Dockerfile
+    ports:
+      - "3002:3002"
+      - "5680:5680"
+    command:
+      - sh
+      - -c
+      - |
+        python -m debugpy --listen 0.0.0.0:5680 -m fastapi run main.py --port 3002 --reload
+    environment:
+      - GOOGLE_CLOUD_PROJECT_ID=tutoriales-miso
+    volumes:
+      - ./src/queries/api:/app
+    networks:
+      - orders-network
+    depends_on:
+      - pg_db
+  order-query-projection:
+    build:
+      context: ./src/queries/projection
+      dockerfile: Dockerfile
+    ports:
+      - "3003:3003"
+      - "5681:5681"
+    command:
+      - sh
+      - -c
+      - |
+        python -m debugpy --listen 0.0.0.0:5681 -m fastapi run main.py --port 3003 --reload
+    environment:
+      - GOOGLE_CLOUD_PROJECT_ID=tutoriales-miso
+    volumes:
+      - ./src/queries/projection:/app
     networks:
       - orders-network
     depends_on:
