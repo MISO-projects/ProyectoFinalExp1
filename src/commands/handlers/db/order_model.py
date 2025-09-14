@@ -2,6 +2,7 @@ from sqlalchemy import Column, DateTime, Integer, String, Numeric, ForeignKey
 from sqlalchemy.orm import relationship
 from datetime import datetime, timezone
 import uuid
+from decimal import Decimal
 
 from .database import Base
 from sqlalchemy.dialects.postgresql import UUID
@@ -31,6 +32,20 @@ class DetalleOrden(Base):
         self.precio_unitario = precio_unitario
         self.subtotal = precio_unitario * cantidad
         self.observaciones = observaciones
+
+    def to_dict(self):
+        """Convert DetalleOrden instance to dictionary"""
+        return {
+            "id": str(self.id),
+            "fecha_creacion": self.fecha_creacion,
+            "fecha_actualizacion": self.fecha_actualizacion,
+            "id_orden": str(self.id_orden),
+            "id_producto": str(self.id_producto),
+            "cantidad": self.cantidad,
+            "precio_unitario": float(self.precio_unitario) if isinstance(self.precio_unitario, Decimal) else self.precio_unitario,
+            "subtotal": float(self.subtotal) if isinstance(self.subtotal, Decimal) else self.subtotal,
+            "observaciones": self.observaciones,
+        }
 
 
 class Orden(Base):
@@ -67,5 +82,21 @@ class Orden(Base):
     def generar_numero_orden(self):
         date_part = datetime.now().strftime('%y%m%d')
         uuid_part = str(uuid.uuid4())[:8].upper()
-
         return f"ORD-{date_part}-{uuid_part}"
+
+    def to_dict(self):
+        """Convert Orden instance to dictionary"""
+        return {
+            "id": str(self.id),
+            "fecha_creacion": self.fecha_creacion,
+            "fecha_actualizacion": self.fecha_actualizacion,
+            "numero_orden": self.numero_orden,
+            "estado": self.estado,
+            "valor_total": float(self.valor_total) if isinstance(self.valor_total, Decimal) else self.valor_total,
+            "id_cliente": str(self.id_cliente),
+            "id_vendedor": str(self.id_vendedor),
+            "id_bodega_origen": str(self.id_bodega_origen),
+            "creado_por": str(self.creado_por),
+            "fecha_entrega_estimada": self.fecha_entrega_estimada,
+            "observaciones": self.observaciones,
+        }
