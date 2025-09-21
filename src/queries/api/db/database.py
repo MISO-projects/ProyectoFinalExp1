@@ -2,15 +2,20 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-DATABASE_URL = os.getenv(
-    "DATABASE_URL", "postgresql://root:orders-pass@pg_db:5432/orders-db"
-)
 TEST_DATABASE_URL = "sqlite:///./test.db"
+
+def get_database_uri():
+    user = os.getenv("POSTGRES_USER", 'root')
+    password = os.getenv("POSTGRES_PASSWORD", 'orders-pass')
+    host = os.getenv("POSTGRES_HOST", "pg_db")
+    port = os.getenv("POSTGRES_PORT", "5432")
+    db_name = os.getenv("POSTGRES_DB", "orders-db")
+    return f"postgresql://{user}:{password}@{host}:{port}/{db_name}"
 
 if os.getenv("TESTING"):
     SQLALCHEMY_DATABASE_URL = TEST_DATABASE_URL
 else:
-    SQLALCHEMY_DATABASE_URL = DATABASE_URL
+    SQLALCHEMY_DATABASE_URL = get_database_uri()
 
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL,

@@ -21,6 +21,11 @@ gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT \
     --member="serviceAccount:$SERVICE_ACCOUNT_EMAIL" \
     --role="roles/pubsub.publisher"
 
+echo "🔑 Granting Secret Manager access..."
+gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT \
+    --member="serviceAccount:$SERVICE_ACCOUNT_EMAIL" \
+    --role="roles/secretmanager.secretAccessor"
+
 # Create topics if they don't exist
 echo "🔐 Creating/checking Topics..."
 if ! gcloud pubsub topics describe create-order-command --quiet 2>/dev/null; then
