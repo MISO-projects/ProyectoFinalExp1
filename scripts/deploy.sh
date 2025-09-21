@@ -49,6 +49,15 @@ elif [ "$1" == "order-command-handler" ]; then
 elif [ "$1" == "order-query-api" ]; then
     echo "Deploying order-query-api"
     gcloud builds submit --region us-central1 --tag $ORDER_QUERY_API_IMAGE "$PROJECT_ROOT/src/queries/api"
+    
+    echo "Getting Redis external IP..."
+    REDIS_EXTERNAL_IP=$(kubectl get service redis-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+    if [ -z "$REDIS_EXTERNAL_IP" ]; then
+        echo "Warning: Redis external IP not found. Make sure Redis is deployed with LoadBalancer service."
+        REDIS_EXTERNAL_IP="redis"
+    else
+        echo "Redis external IP: $REDIS_EXTERNAL_IP"
+    fi
     # Deploy to Cloud Run
     gcloud run deploy order-query-api \
         --image $ORDER_QUERY_API_IMAGE \
@@ -63,7 +72,7 @@ elif [ "$1" == "order-query-api" ]; then
         --network=projects/$GOOGLE_CLOUD_PROJECT/global/networks/vpn-tutoriales-miso \
         --subnet=projects/$GOOGLE_CLOUD_PROJECT/regions/us-central1/subnetworks/red-k8s-tutoriales \
         --set-secrets=POSTGRES_PASSWORD=medisupply_orders-postgres_password:latest \
-        --set-env-vars=GOOGLE_CLOUD_PROJECT_ID=$GOOGLE_CLOUD_PROJECT,POSTGRES_USER=postgres,POSTGRES_HOST=192.168.0.3,POSTGRES_PORT=5432,POSTGRES_DB=postgres,REDIS_HOST=redis,REDIS_PORT=6379,REDIS_DB=0
+        --set-env-vars=GOOGLE_CLOUD_PROJECT_ID=$GOOGLE_CLOUD_PROJECT,POSTGRES_USER=postgres,POSTGRES_HOST=192.168.0.3,POSTGRES_PORT=5432,POSTGRES_DB=postgres,REDIS_HOST=${REDIS_EXTERNAL_IP},REDIS_PORT=6379,REDIS_DB=0
 elif [ "$1" == "order-projection-handler" ]; then
     echo "Deploying order-projection-handler"
     gcloud builds submit --region us-central1 --tag $ORDER_PROJECTION_HANDLER_IMAGE "$PROJECT_ROOT/src/queries/projection"

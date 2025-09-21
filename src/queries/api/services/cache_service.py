@@ -8,8 +8,7 @@ logger = logging.getLogger(__name__)
 
 class CacheService:
     def __init__(self, default_ttl: int = 300):  # 5 minutes default TTL
-        # self.redis_client = get_redis_client()
-        self.redis_client = None
+        self.redis_client = get_redis_client()
         self.default_ttl = default_ttl
         self.key_prefix = "order:"
 
