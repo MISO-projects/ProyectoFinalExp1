@@ -69,12 +69,16 @@ services:
         python -m debugpy --listen 0.0.0.0:5680 -m fastapi run main.py --port 3002 --reload
     environment:
       - GOOGLE_CLOUD_PROJECT_ID=tutoriales-miso
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_DB=0
     volumes:
       - ./src/queries/api:/app
     networks:
       - orders-network
     depends_on:
       - pg_db
+      - redis
   order-query-projection:
     build:
       context: ./src/queries/projection
@@ -95,6 +99,14 @@ services:
       - orders-network
     depends_on:
       - pg_db
+  redis:
+    image: redis
+    volumes:
+      - ./data/redis:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - orders-network
 
 
 networks:
