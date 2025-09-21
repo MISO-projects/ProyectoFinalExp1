@@ -11,6 +11,12 @@ order_router = APIRouter()
 
 
 @order_router.get("/{order_id}")
-async def create_order(order_id: str, order_service: OrderService = Depends()):
+async def get_order(order_id: str, order_service: OrderService = Depends()):
     data = order_service.get_order(order_id)
     return {"data": data}
+
+
+@order_router.get("/health/cache")
+async def get_cache_health(order_service: OrderService = Depends()):
+    """Get cache health status and statistics"""
+    return order_service.get_cache_health()
