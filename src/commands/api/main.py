@@ -13,5 +13,5 @@ app = FastAPI()
 
 @app.post("/")
 async def create_order(order: CrearOrdenSchema):
-    order_service.create_order(order.model_dump())
-    return {"message": "Orden creada correctamente"}
+    result = order_service.create_order(order.model_dump())
+    return {"id": result["id"], "numero_orden": result["numero_orden"]}
