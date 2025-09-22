@@ -57,4 +57,41 @@ en el body se include el mensaje codificado en base64.
 
 # Despliegue en GCP
 
-TODO: Despliegue en GCP.
+En la carpeta `scripts` se encuentran los scripts para desplegar los servicios en GCP. Es necesario tener el cli de google cloud instalado y configurado con un proyecto de GCP.
+
+La configuración inicial se realiza con el script `scripts/setup_gcp.sh`.
+```bash
+./scripts/setup_gcp.sh
+```
+
+El despliegue se realiza con el script `scripts/deploy.sh` indicando el nombre del microservicio a desplegar.
+```bash
+./scripts/deploy.sh order-command-api
+./scripts/deploy.sh order-command-handler
+./scripts/deploy.sh order-query-api
+./scripts/deploy.sh order-query-projection
+```
+
+La suscripción a los topics se realiza con el script `scripts/setup_pubsub.sh`.
+```bash
+./scripts/setup_pubsub.sh
+```
+
+Para desplegar la instancia de redis se usa la configuración en la carpeta `k8s` para desplegarla en el cluster de kubernetes:
+
+```bash
+kubectl apply -f k8s/redis-deployment.yml
+```
+
+
+# Pruebas de carga
+
+En la carpeta `k6` se encuentran los scripts para realizar las pruebas de carga.
+
+Para ejecutar las pruebas de carga se utiliza el comando `k6 run <script>.js`.
+
+```bash
+k6 run k6/create-orders.js
+k6 run k6/query-orders.js
+```
+
