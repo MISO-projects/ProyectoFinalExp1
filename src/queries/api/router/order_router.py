@@ -9,6 +9,10 @@ logger = logging.getLogger(__name__)
 
 order_router = APIRouter()
 
+@order_router.get("/ids")
+async def get_all_order_ids(order_service: OrderService = Depends()):
+    data = order_service.get_all_order_ids()
+    return {"data": data}
 
 @order_router.get("/{order_id}")
 async def get_order(order_id: str, order_service: OrderService = Depends()):

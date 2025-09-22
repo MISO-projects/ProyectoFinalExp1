@@ -49,3 +49,12 @@ class OrderService:
             "health": self.cache_service.health_check(),
             "stats": self.cache_service.get_cache_stats()
         }
+
+    def get_all_order_ids(self) -> list[str]:
+        """Get a list of all order IDs from the database
+        
+        Returns:
+            list[str]: List of order IDs
+        """
+        orders = self.db.query(OrderProjection.id).all()
+        return [order.id for order in orders]

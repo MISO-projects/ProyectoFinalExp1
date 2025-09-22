@@ -65,11 +65,12 @@ class Orden(Base):
     observaciones = Column(String, nullable=True)
     detalles = relationship("DetalleOrden", back_populates="orden")
 
-    def __init__(self, estado, id_cliente, id_vendedor, id_bodega_origen, creado_por, fecha_entrega_estimada, observaciones):
+    def __init__(self, id, numero_orden, estado, id_cliente, id_vendedor, id_bodega_origen, creado_por, fecha_entrega_estimada, observaciones):
         now = datetime.now(timezone.utc)
+        self.id = id if id else uuid.uuid4()
         self.fecha_creacion = now
         self.fecha_actualizacion = now
-        self.numero_orden = self.generar_numero_orden()
+        self.numero_orden = numero_orden if numero_orden else self.generar_numero_orden()
         self.estado = estado
         self.valor_total = 0
         self.id_cliente = id_cliente
